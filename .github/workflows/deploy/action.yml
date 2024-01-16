@@ -6,8 +6,19 @@ inputs:
     required: false
     default: main master
 runs:
-  using: "composite"
+  using: composite
   steps:
+    - name: Parse inputs
+      id: parse
+      env:
+        BRANCHES: ${{ inputs.branches }}
+      shell: python
+      run: |
+        import json, os
+        branches = json.dumps(os.environ['BRANCHES'].split())
+        with open(os.environ['GITHUB_ENV'], 'w') as env:
+          env.write(f'BRANCHES={branches}\n')
+
     - name: Write manifest
       shell: Rscript {0}
       run: |
@@ -32,6 +43,6 @@ runs:
       # This action was designed for GitHub Pages deployments, but it works perfectly here.
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        dry-run: ${{ github.ref_name != inputs.branches }}
+        dry-run: ${{ !contains(fromJSON(env.BRANCHES), github.ref_name) }}
         branch: bot/deploy/${{ github.ref_name }}
         folder: build

@@ -75,5 +75,3 @@ jobs:
 
       - name: Deploy to branch
         uses: ./.github/workflows/deploy
-        with:
-          branches: main
