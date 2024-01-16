@@ -1,11 +1,13 @@
 name: Rhino Test
 on: push
 permissions:
-  contents: read
+  contents: write
 jobs:
   main:
     name: Run linters and tests
     runs-on: ubuntu-22.04
+    env:
+      DEPLOY_BRANCH: main
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -70,3 +72,30 @@ jobs:
       #     project: ../tests
       #     wait-on: 'http://localhost:3333/'
       #     wait-on-timeout: 60
+
+      - name: Write manifest
+        shell: Rscript {0}
+        run: |
+          renv::install("rsconnect")
+          rsconnect::writeManifest()
+
+      - name: Prepare deployment
+        run: |
+          files=(
+            .Rprofile
+            app
+            app.R
+            config.yml
+            manifest.json
+            rhino.yml
+          )
+          mkdir build
+          mv "${files[@]}" build
+
+      - name: Deploy to branch
+        # This action was designed for GitHub Pages deployments, but it works perfectly here.
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          dry-run: ${{ github.ref_name != env.DEPLOY_BRANCH }}
+          branch: bot/deploy/${{ github.ref_name }}
+          folder: build
