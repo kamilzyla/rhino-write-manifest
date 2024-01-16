@@ -1536,7 +1536,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "CRAN",
         "Date/Publication": "2023-09-19 08:10:02 UTC",
-        "Built": "R 4.1.1; ; 2024-01-16 15:46:53 UTC; unix"
+        "Built": "R 4.1.1; ; 2024-01-16 15:50:56 UTC; unix"
       }
     },
     "rex": {
@@ -2173,7 +2173,7 @@
   },
   "files": {
     ".Rprofile": {
-      "checksum": "a46276d29b735a005df76c9cca5b038f"
+      "checksum": "8c807766b06ed0370972348cbc109e8a"
     },
     "app.R": {
       "checksum": "d4103b4dcc8bebfefd99294ba6125f11"
