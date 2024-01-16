@@ -81,3 +81,5 @@ jobs:
 
       - name: Deploy to branch
         uses: ./.github/workflows/deploy
+        with:
+          force: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy }}

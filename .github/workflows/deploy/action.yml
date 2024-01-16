@@ -3,8 +3,10 @@ description: Deploy a Rhino app to branch
 inputs:
   branches:
     description: Which branches to create deployments for?
-    required: false
     default: main master
+  force:
+    description: Deploy even if branch doesn't match?
+    default: false
 runs:
   using: composite
   steps:
@@ -43,6 +45,6 @@ runs:
       # This action was designed for GitHub Pages deployments, but it works perfectly here.
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        dry-run: ${{ !contains(fromJSON(env.BRANCHES), github.ref_name) }}
+        dry-run: ${{ !fromJSON(inputs.force) && !contains(fromJSON(env.BRANCHES), github.ref_name) }}
         branch: bot/deploy/${{ github.ref_name }}
         folder: build
