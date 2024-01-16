@@ -1,0 +1,37 @@
+name: Deploy
+description: Deploy a Rhino app to branch
+inputs:
+  branches:
+    description: Which branches to create deployments for?
+    required: false
+    default: main master
+runs:
+  using: "composite"
+  steps:
+    - name: Write manifest
+      shell: Rscript {0}
+      run: |
+        renv::install("rsconnect")
+        rsconnect::writeManifest()
+
+    - name: Prepare deployment
+      shell: bash
+      run: |
+        files=(
+          .Rprofile
+          app
+          app.R
+          config.yml
+          manifest.json
+          rhino.yml
+        )
+        mkdir build
+        mv "${files[@]}" build
+
+    - name: Deploy to branch
+      # This action was designed for GitHub Pages deployments, but it works perfectly here.
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        dry-run: ${{ github.ref_name != inputs.branches }}
+        branch: bot/deploy/${{ github.ref_name }}
+        folder: build
